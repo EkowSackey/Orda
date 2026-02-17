@@ -8,7 +8,7 @@ public class OrdaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(OrdaApplication.class, args);
-        System.out.println("Let's begin again");
+
 	}
 
 }
