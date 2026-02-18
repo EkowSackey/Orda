@@ -26,8 +26,8 @@ class JwtUtilsTest {
     @Test
     void generateJwtToken_ShouldReturnValidToken() {
         Authentication authentication = Mockito.mock(Authentication.class);
-        User user = new User();
-        user.setUsername("testuser");
+        User user = User.builder().username("testuser").build();
+
         
         when(authentication.getPrincipal()).thenReturn(user);
 
@@ -50,8 +50,7 @@ class JwtUtilsTest {
         ReflectionTestUtils.setField(jwtUtils, "jwtExpirationMs", -1000);
         
         Authentication authentication = Mockito.mock(Authentication.class);
-        User user = new User();
-        user.setUsername("expireduser");
+        User user = User.builder().username("expireduser").build();
         when(authentication.getPrincipal()).thenReturn(user);
 
         String token = jwtUtils.generateJwtToken(authentication);
@@ -62,8 +61,7 @@ class JwtUtilsTest {
     @Test
     void getUserNameFromJwtToken_ShouldReturnCorrectUsername() {
         Authentication authentication = Mockito.mock(Authentication.class);
-        User user = new User();
-        user.setUsername("extractuser");
+        User user = User.builder().username("extractuser").build();
         when(authentication.getPrincipal()).thenReturn(user);
 
         String token = jwtUtils.generateJwtToken(authentication);

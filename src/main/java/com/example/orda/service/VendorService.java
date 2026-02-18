@@ -13,4 +13,7 @@ public interface VendorService {
     Vendor updateVendor(String id, Vendor vendorDetails);
     void deleteVendor(String id);
     List<MenuItem> getVendorMenu(String vendorId);
+    MenuItem addMenuItem(String vendorId, MenuItem menuItem);
+    MenuItem updateMenuItem(String vendorId, String menuItemId, MenuItem menuItem);
+    void deleteMenuItem(String vendorId, String menuItemId);
 }
