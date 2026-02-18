@@ -27,9 +27,11 @@ class UserDetailsServiceImplTest {
     @Test
     void loadUserByUsername_ShouldReturnUserDetails_WhenUserExists() {
         String username = "existingUser";
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword("password");
+        User user = User.builder()
+                .username(username)
+                .password("password")
+                .build();
+
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 

@@ -1,11 +1,17 @@
 package com.example.orda.service.impl;
 
+import com.example.orda.dto.AdminOrderDetailResponse;
 import com.example.orda.dto.OrderHistoryDTO;
+import com.example.orda.dto.VendorOrderSummary;
 import com.example.orda.enums.OrderStatus;
 import com.example.orda.exception.EntityNotFoundException;
 import com.example.orda.model.Order;
 import com.example.orda.model.OrderItem;
+import com.example.orda.model.User;
+import com.example.orda.model.Vendor;
 import com.example.orda.repository.OrderRepository;
+import com.example.orda.repository.UserRepository;
+import com.example.orda.repository.VendorRepository;
 import com.example.orda.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +28,8 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final VendorRepository vendorRepository;
 
     @Override
     @Transactional
@@ -48,9 +56,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order repeatOrder(String oldOrderId) {
+    public Order repeatOrder(String oldOrderId, String userId) {
         Order oldOrder = orderRepository.findById(oldOrderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + oldOrderId));
+
+        if (!oldOrder.getUserId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to repeat this order.");
+        }
 
         List<OrderItem> newItems = oldOrder.getItems().stream()
                 .map(item -> OrderItem.builder()
@@ -73,5 +85,31 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(newOrder);
         log.info("Order Repeated: UserID={}, Amount={}, OldOrderID={}", savedOrder.getUserId(), savedOrder.getTotalAmount(), oldOrderId);
         return savedOrder;
+    }
+
+    @Override
+    public List<VendorOrderSummary> getVendorOrderSummaries() {
+        return orderRepository.aggregateOrdersByVendor();
+    }
+
+    @Override
+    public List<AdminOrderDetailResponse> getAllOrdersForAdmin() {
+        return orderRepository.findAll().stream()
+                .map(order -> {
+                    User user = userRepository.findById(order.getUserId()).orElse(null);
+                    Vendor vendor = vendorRepository.findById(order.getVendorId()).orElse(null);
+
+                    return AdminOrderDetailResponse.builder()
+                            .orderId(order.getId())
+                            .employeeName(user != null ? user.getUsername() : "Unknown") // Fallback if user deleted
+                            .employeeEmail(user != null ? user.getEmail() : "N/A")
+                            .vendorName(vendor != null ? vendor.getName() : "Unknown Vendor")
+                            .items(order.getItems())
+                            .totalAmount(order.getTotalAmount())
+                            .orderTime(order.getOrderTime())
+                            .status(order.getStatus())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }
