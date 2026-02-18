@@ -14,6 +14,6 @@ import java.util.List;
 public class OrderItem {
     private String menuItemId;
     private String itemName;
-    private List<String> selectedCustomizations;
     private Double price;
+    private List<String> selectedCustomizations;
 }
