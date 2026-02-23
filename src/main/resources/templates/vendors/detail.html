@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${vendor.name} + ' - Orda'">Vendor</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${vendor.name}">Vendor Name</h2>
+            <a href="/vendors" class="btn btn-outline-secondary">Back to Vendors</a>
+        </div>
+        <p class="lead" th:text="${vendor.contactInfo}">Contact Info</p>
+
+        <h3 class="mt-5 mb-3">Menu</h3>
+        <div class="row">
+            <div class="col-md-6 mb-4" th:each="item : ${vendor.menu}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title" th:text="${item.name}">Item Name</h5>
+                            <span class="badge bg-success fs-6" th:text="'$' + ${#numbers.formatDecimal(item.basePrice, 1, 2)}">$0.00</span>
+                        </div>
+                        <p class="card-text text-muted" th:if="${!#lists.isEmpty(item.customizationOptions)}">
+                            Customizations: <span th:text="${#strings.listJoin(item.customizationOptions, ', ')}">Options</span>
+                        </p>
+                        <button class="btn btn-sm btn-outline-primary mt-2"
+                                th:data-vendor-id="${vendor.id}"
+                                th:data-item-id="${item.id}"
+                                th:data-item-name="${item.name}"
+                                th:data-item-price="${item.basePrice}"
+                                onclick="addToCart(this.getAttribute('data-vendor-id'), this.getAttribute('data-item-id'), this.getAttribute('data-item-name'), parseFloat(this.getAttribute('data-item-price')))">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" th:if="${#lists.isEmpty(vendor.menu)}">
+                <div class="alert alert-warning">This vendor has no menu items yet.</div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

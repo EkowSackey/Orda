@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,19 +90,30 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<VendorOrderSummary> getVendorOrderSummaries() {
-        return orderRepository.aggregateOrdersByVendor();
+        List<VendorOrderSummary> summaries = orderRepository.aggregateOrdersByVendor();
+        
+        // Fetch vendor names
+        Map<String, String> vendorNames = vendorRepository.findAll().stream()
+                .collect(Collectors.toMap(Vendor::getId, Vendor::getName));
+
+        summaries.forEach(summary -> 
+            summary.setVendorName(vendorNames.getOrDefault(summary.getVendorId(), "Unknown Vendor"))
+        );
+        
+        return summaries;
     }
 
     @Override
     public List<AdminOrderDetailResponse> getAllOrdersForAdmin() {
-        return orderRepository.findAll().stream()
+        // Only fetch PENDING orders for lunch coordination
+        return orderRepository.findByStatus(OrderStatus.PENDING).stream()
                 .map(order -> {
                     User user = userRepository.findById(order.getUserId()).orElse(null);
                     Vendor vendor = vendorRepository.findById(order.getVendorId()).orElse(null);
 
                     return AdminOrderDetailResponse.builder()
                             .orderId(order.getId())
-                            .employeeName(user != null ? user.getUsername() : "Unknown") // Fallback if user deleted
+                            .employeeName(user != null ? user.getUsername() : "Unknown")
                             .employeeEmail(user != null ? user.getEmail() : "N/A")
                             .vendorName(vendor != null ? vendor.getName() : "Unknown Vendor")
                             .items(order.getItems())

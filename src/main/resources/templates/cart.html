@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Your Cart</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4">Your Cart</h2>
+        <div id="cart-empty" class="alert alert-info" style="display: none;">
+            Your cart is empty. <a href="/vendors">Browse vendors</a> to add items.
+        </div>
+
+        <div id="cart-content">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    <!-- Items will be injected here by JS -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="cart-total">$0.00</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+                <form id="checkout-form" th:action="@{/orders/checkout}" method="post">
+                    <input type="hidden" name="vendorId" id="vendorId">
+                    <input type="hidden" name="itemsJson" id="itemsJson">
+                    <input type="hidden" name="totalAmount" id="totalAmount">
+                    <button type="submit" class="btn btn-success btn-lg">Checkout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = getCart();
+            const cartContent = document.getElementById('cart-content');
+            const cartEmpty = document.getElementById('cart-empty');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+
+            if (!cart.items || cart.items.length === 0) {
+                cartContent.style.display = 'none';
+                cartEmpty.style.display = 'block';
+                return;
+            }
+
+            let html = '';
+            cart.items.forEach((item, index) => {
+                html += `
+                    <tr>
+                        <td>${item.itemName}</td>
+                        <td>$${item.price.toFixed(2)}</td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${index})">Remove</button></td>
+                    </tr>
+                `;
+            });
+
+            cartItems.innerHTML = html;
+            cartTotal.innerText = '$' + cart.totalAmount.toFixed(2);
+
+            // Populate hidden form fields
+            document.getElementById('vendorId').value = cart.vendorId;
+            document.getElementById('itemsJson').value = JSON.stringify(cart.items);
+            document.getElementById('totalAmount').value = cart.totalAmount;
+        });
+    </script>
+</section>
+</body>
+</html>

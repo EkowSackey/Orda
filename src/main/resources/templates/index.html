@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold">Hungry? We've got you covered.</h1>
+            <p class="col-md-8 fs-4 mx-auto">Order from your favorite local vendors with just a few clicks.</p>
+            <a href="/vendors" class="btn btn-primary btn-lg">Browse Vendors</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Fast Delivery</h3>
+            <p>Get your food delivered to your doorstep in no time.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>Local Vendors</h3>
+            <p>Support your favorite local restaurants and kitchens.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>Easy Ordering</h3>
+            <p>Simple and intuitive interface for a seamless experience.</p>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VendorOrderSummary {
     private String vendorId;
-    private Long orderCount;
+    private String vendorName; // Added vendorName
+    private Long totalOrders; // Renamed from orderCount to match template
     private Double totalRevenue;
 }

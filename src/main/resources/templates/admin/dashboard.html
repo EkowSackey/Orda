@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4">Admin Dashboard</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Vendor Summaries</h5>
+                        <p class="card-text">View total orders and revenue per vendor.</p>
+                        <a href="/admin/summary" class="btn btn-primary">View Summaries</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Logistics</h5>
+                        <p class="card-text">View detailed order logs for all users.</p>
+                        <a href="/admin/logistics" class="btn btn-primary">View Logistics</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

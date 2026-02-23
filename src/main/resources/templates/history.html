@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Order History</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4">Order History</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Vendor</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}">ID</td>
+                        <td th:text="${order.vendorId}">Vendor</td>
+                        <td th:text="${#temporals.format(order.orderTime, 'dd-MM-yyyy HH:mm')}">Date</td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${order.status}">Status</span>
+                        </td>
+                        <td>
+                            <form th:action="@{/orders/{id}/repeat(id=${order.id})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Repeat Order</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="6" class="text-center">No orders found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

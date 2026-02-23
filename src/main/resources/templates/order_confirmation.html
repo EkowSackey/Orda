@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Order Confirmation</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container text-center mt-5">
+        <h1 class="display-4 text-success">Order Placed Successfully!</h1>
+        <p class="lead">Thank you for your order. It is being processed.</p>
+        <a href="/orders/history" class="btn btn-primary mt-3">View Order History</a>
+    </div>
+</section>
+</body>
+</html>

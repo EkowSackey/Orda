@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Vendors</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4">Our Vendors</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="vendor : ${vendors}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${vendor.name}">Vendor Name</h5>
+                        <p class="card-text" th:text="${vendor.contactInfo}">Contact Info</p>
+                        <a th:href="@{/vendors/{id}(id=${vendor.id})}" class="btn btn-primary">View Menu</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" th:if="${#lists.isEmpty(vendors)}">
+                <div class="alert alert-info">No vendors available at the moment.</div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

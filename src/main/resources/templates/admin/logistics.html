@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Logistics</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Pending Orders Logistics</h2>
+            <a href="/admin" class="btn btn-outline-secondary">Back to Dashboard</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Employee</th>
+                        <th>Vendor</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.orderId}">ID</td>
+                        <td>
+                            <div th:text="${order.employeeName}">Name</div>
+                            <small class="text-muted" th:text="${order.employeeEmail}">Email</small>
+                        </td>
+                        <td th:text="${order.vendorName}">Vendor</td>
+                        <td>
+                            <ul class="list-unstyled mb-0">
+                                <li th:each="item : ${order.items}">
+                                    <span th:text="${item.itemName}">Item</span>
+                                    <small class="text-muted" th:if="${!#lists.isEmpty(item.selectedCustomizations)}"
+                                           th:text="'(' + ${#strings.listJoin(item.selectedCustomizations, ', ')} + ')'"></small>
+                                </li>
+                            </ul>
+                        </td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</td>
+                        <td th:text="${#temporals.format(order.orderTime, 'HH:mm')}">Time</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="6" class="text-center">No pending orders found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

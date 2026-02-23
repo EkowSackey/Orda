@@ -15,8 +15,9 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findByStatus(OrderStatus status);
 
     @Aggregation(pipeline = {
-        "{ '$group': { '_id': '$vendorId', 'orderCount': { '$sum': 1 }, 'totalRevenue': { '$sum': '$totalAmount' } } }",
-        "{ '$project': { 'vendorId': '$_id', 'orderCount': 1, 'totalRevenue': 1, '_id': 0 } }"
+        "{ '$match': { 'status': 'PENDING' } }", // Only aggregate pending orders
+        "{ '$group': { '_id': '$vendorId', 'totalOrders': { '$sum': 1 }, 'totalRevenue': { '$sum': '$totalAmount' } } }",
+        "{ '$project': { 'vendorId': '$_id', 'totalOrders': 1, 'totalRevenue': 1, '_id': 0 } }"
     })
     List<VendorOrderSummary> aggregateOrdersByVendor();
 }
